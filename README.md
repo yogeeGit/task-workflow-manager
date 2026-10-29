@@ -1,49 +1,83 @@
-# Task Workflow Manager API
 
-A RESTful task management backend built with Node.js, Express, and MySQL. It supports full CRUD operations, task status tracking, input validation, and parameterized SQL queries.
+# Task Workflow Manager
+
+A full-stack task management application built with React, Express.js, and MySQL. Users can create tasks, view saved tasks, update their status, and delete tasks.
 
 ## Features
 
-- Create tasks with a title, description, and status.
-- Retrieve all tasks from MySQL.
-- Update one or more task fields.
-- Delete tasks by ID.
-- Track task creation and modification timestamps.
-- Validate task IDs, titles, and allowed statuses.
-- Use parameterized SQL queries to help prevent SQL injection.
-- Manage database connections through a MySQL connection pool.
+- Create tasks with a title and description
+- View tasks stored in MySQL
+- Update task status: Pending, In Progress, or Completed
+- Delete tasks with confirmation
+- Responsive React dashboard
+- REST API with CRUD operations
+- Parameterized SQL queries to help prevent SQL injection
+- Input validation and error handling
 
 ## Tech Stack
 
+### Frontend
+- React
+- Vite
+- JavaScript
+- HTML and CSS
+- Fetch API
+
+### Backend
 - Node.js
 - Express.js
-- MySQL 8
-- mysql2
+- MySQL2
+- REST API
 - dotenv
-- cors
+- CORS
+
+### Tools
+- VS Code
+- Postman
+- MySQL Workbench
+- Git and GitHub
 
 ## Project Structure
 
 ```text
 task-workflow-manager/
-├── db.js
-├── index.js
-├── .env
+├── client/             # React + Vite frontend
+├── db.js               # MySQL connection pool
+├── index.js            # Express API and routes
+├── .env                # Local environment variables (not committed)
 ├── .gitignore
 ├── package.json
-├── package-lock.json
 └── README.md
 ```
 
-## Setup
+## Prerequisites
 
-### 1. Install dependencies
+- Node.js and npm
+- MySQL Server
+- Git
 
-```bash
-npm install
+## Database Setup
+
+Create the database and table in MySQL:
+
+```sql
+CREATE DATABASE IF NOT EXISTS task_manager_db;
+
+USE task_manager_db;
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status ENUM('Pending', 'In Progress', 'Completed')
+        NOT NULL DEFAULT 'Pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
-### 2. Configure environment variables
+## Environment Configuration
 
 Create a `.env` file in the project root:
 
@@ -51,18 +85,24 @@ Create a `.env` file in the project root:
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=your_mysql_password
+DB_PASSWORD=your_local_mysql_password
 DB_NAME=task_manager_db
 PORT=5000
 ```
 
-Replace the example password with your local MySQL password. Never commit `.env` to GitHub.
+Replace the example password with your local MySQL password. Never commit your actual `.env` file.
 
-### 3. Create the database
+## Installation and Running
 
-Create the `task_manager_db` database and the `tasks` table using the SQL schema developed for this project.
+### 1. Install backend dependencies
 
-### 4. Start the server
+From the project root:
+
+```bash
+npm install
+```
+
+### 2. Start the backend
 
 ```bash
 node index.js
@@ -70,41 +110,70 @@ node index.js
 
 The API runs at `http://localhost:5000`.
 
+### 3. Install frontend dependencies
+
+Open a second terminal from the project root:
+
+```bash
+cd client
+npm install
+```
+
+### 4. Start the frontend
+
+From the `client` directory:
+
+```bash
+npm run dev
+```
+
+Open the local URL printed by Vite, usually `http://localhost:5173`.
+
+Keep both terminals running while using the application.
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/` | Check API status |
-| GET | `/api/db-check` | Check database connectivity |
-| POST | `/api/tasks` | Create a task |
 | GET | `/api/tasks` | Retrieve all tasks |
-| PUT | `/api/tasks/:id` | Update a task |
+| POST | `/api/tasks` | Create a task |
+| PUT | `/api/tasks/:id` | Update task details or status |
 | DELETE | `/api/tasks/:id` | Delete a task |
 
-## Task Statuses
+### Example: Create a task
 
-Supported statuses:
+Send a `POST` request to `http://localhost:5000/api/tasks`:
+
+```json
+{
+  "title": "Build Dashboard",
+  "description": "Create the task management interface"
+}
+```
+
+The task defaults to `Pending` when a status is not provided.
+
+## Task Statuses
 
 - `Pending`
 - `In Progress`
 - `Completed`
 
-New tasks default to `Pending` when no status is provided.
-
 ## Security and Validation
 
 - SQL values are passed using parameterized queries.
-- Task IDs and task fields are validated.
-- Database credentials are stored in environment variables.
-- `.env` and `node_modules/` should be excluded from version control.
+- Task input is validated by the backend.
+- Database credentials are stored in local environment variables.
+- `.env` and dependency directories are excluded from version control.
 
 ## Future Improvements
 
-- Add pagination and filtering by task status.
-- Add automated API tests.
-- Introduce authentication and authorization.
-- Add a frontend for managing tasks.
+- User authentication and authorization
+- Search and filter tasks by status
+- Pagination
+- Automated testing
+- Deployment of the frontend, API, and database
 
 ## Author
 
-Developed as a backend project to practice REST APIs, Express.js, SQL, and database integration.
+Yogeshwaran
